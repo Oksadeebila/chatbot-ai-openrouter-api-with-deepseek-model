@@ -26,7 +26,6 @@ if "messages" not in st.session_state:
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
-
 # Accept user input
 if prompt := st.chat_input("Write here!"):
     # Add user message to chat history
@@ -39,20 +38,35 @@ if prompt := st.chat_input("Write here!"):
     # Show a spinner while waiting for the response
     with st.spinner("OksaAI is thinking..."):
         try:
-            # Call the OpenRouter API to get a response
-            response = client.chat.completions.create(
-                model=st.session_state["openai_model"],
-                messages=st.session_state.messages,
-                extra_headers={
-                    
-                    "HTTP-Referer": "https://chatbot-ai-deepseek-model.streamlit.app/",  # my url
-                    "X-Title": "OksaAI",  # my app name
-                }
+            # Prepare headers
+            headers = {
+                "Authorization": f"Bearer {api_key}",
+                "HTTP-Referer": "https://oksaai.streamlit.app",  # Ganti dengan URL Anda
+                "X-Title": "OksaAI Chatbot",
+                "Content-Type": "application/json"
+            }
+            
+            # Prepare request data
+            data = {
+                "model": st.session_state["openai_model"],
+                "messages": st.session_state.messages
+            }
+            
+            # Make the API call
+            response = requests.post(
+                f"{base_url}/chat/completions", 
+                headers=headers,
+                json=data
             )
-
-            # Get the answer from the response
-            answer = response.choices[0].message.content
-
+            
+            # Process the response
+            if response.status_code == 200:
+                response_data = response.json()
+                answer = response_data["choices"][0]["message"]["content"]
+            else:
+                answer = f"Error: API returned status code {response.status_code} - {response.text}"
+                st.error(f"API Error: {response.text}")
+                
         except Exception as e:
             answer = f"Error: {str(e)}"
             st.error(f"An error occurred: {str(e)}")
@@ -63,3 +77,39 @@ if prompt := st.chat_input("Write here!"):
     # Display the answer in UI
     with st.chat_message("assistant"):
         st.markdown(answer)
+# # Accept user input
+# if prompt := st.chat_input("Write here!"):
+#     # Add user message to chat history
+#     st.session_state.messages.append({"role": "user", "content": prompt})
+
+#     # Display user input in UI
+#     with st.chat_message("user"):
+#         st.markdown(prompt)
+
+#     # Show a spinner while waiting for the response
+#     with st.spinner("OksaAI is thinking..."):
+#         try:
+#             # Call the OpenRouter API to get a response
+#             response = client.chat.completions.create(
+#                 model=st.session_state["openai_model"],
+#                 messages=st.session_state.messages,
+#                 extra_headers={
+                    
+#                     "HTTP-Referer": "https://chatbot-ai-deepseek-model.streamlit.app/",  # my url
+#                     "X-Title": "OksaAI",  # my app name
+#                 }
+#             )
+
+#             # Get the answer from the response
+#             answer = response.choices[0].message.content
+
+#         except Exception as e:
+#             answer = f"Error: {str(e)}"
+#             st.error(f"An error occurred: {str(e)}")
+
+#     # Add the answer to chat history
+#     st.session_state.messages.append({"role": "assistant", "content": answer})
+
+#     # Display the answer in UI
+#     with st.chat_message("assistant"):
+#         st.markdown(answer)
