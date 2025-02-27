@@ -54,11 +54,15 @@ if prompt := st.chat_input("Write here!"):
             }
             
             # Make the API call
-            response = requests.post(
-                f"{base_url}/chat/completions", 
-                headers=headers,
-                json=data
-            )
+            response = client.chat.completions.create(
+            model=st.session_state["openai_model"],
+            messages=st.session_state.messages,
+            extra_headers={
+            "HTTP-Referer": "https://chatbot-ai-deepseek-model.streamlit.app",  # Ganti dengan URL kamu
+            "X-Title": "OksaAI",
+    }
+)
+
             
             # Process the response
             if response.status_code == 200:
