@@ -6,7 +6,7 @@ st.title("Tanya OksaAI 🚀")
 st.write("Ask me with whatever you curious about")
 
 # using direct api-key because it is only for developement
-api_key = "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"
+api_key = "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"
 
 # inisialisasi client OpenAI
 # baserul untuk alamat endpoint OpenRuter.
