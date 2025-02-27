@@ -44,7 +44,8 @@ if prompt := st.chat_input("Write here!"):
                 model=st.session_state["openai_model"],
                 messages=st.session_state.messages,
                 extra_headers={
-                    "HTTP-Referer": "HTTP-Referer": "https://chatbot-ai-deepseek-model.streamlit.app/",  # my url
+                    
+                    "HTTP-Referer": "https://chatbot-ai-deepseek-model.streamlit.app/",  # my url
                     "X-Title": "OksaAI",  # my app name
                 }
             )
